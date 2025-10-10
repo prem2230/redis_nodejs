@@ -1,0 +1,113 @@
+{
+    "name": "Redis Notebook",
+    "fileName": "My Fortunate Price Notebook.json",
+    "createdAt": "2025-10-09T07:33:14.139Z",
+    "cells": [
+        {
+            "id": "92dad68b8cf1272b",
+            "type": "markdown",
+            "content": "**Notes**\n\n* Add some notes here\n* Use markdown"
+        },
+        {
+            "id": "e3a5eac76510f3f9",
+            "type": "redis",
+            "content": "SET message 'Hi there!'"
+        },
+        {
+            "id": "1759995512071",
+            "type": "redis",
+            "content": "GET message "
+        },
+        {
+            "id": "1760001393859",
+            "type": "redis",
+            "content": "SET color red\r\n\r\nSET color green GET\r\n\r\nGET color\r\n"
+        },
+        {
+            "id": "1760004614374",
+            "type": "redis",
+            "content": "SET color2 'hi there' NX\r\n"
+        },
+        {
+            "id": "1760004930093",
+            "type": "redis",
+            "content": "SET number 2 EX 2\r\nGET number \r\nSET number2 30 PX 10000"
+        },
+        {
+            "id": "1760004934466",
+            "type": "redis",
+            "content": "GET number\r\nGET number2"
+        },
+        {
+            "id": "1760011029430",
+            "type": "redis",
+            "content": "GET color\r\nGET model"
+        },
+        {
+            "id": "1760072667031",
+            "type": "redis",
+            "content": "MSET multiple 1 2 3 \r\n\r\nMGET color multiple"
+        },
+        {
+            "id": "1760073291679",
+            "type": "redis",
+            "content": "GET color\r\n\r\nDEL color\r\n\r\nGET color"
+        },
+        {
+            "id": "1760073380944",
+            "type": "redis",
+            "content": "GET model\r\nGETRANGE model 0 2"
+        },
+        {
+            "id": "1760073447244",
+            "type": "redis",
+            "content": "SETRANGE model 2 fiat \r\nGET model"
+        },
+        {
+            "id": "1760073921148",
+            "type": "redis",
+            "content": "MSET item:1 abc item:2 def item:3 gh"
+        },
+        {
+            "id": "1760073968065",
+            "type": "redis",
+            "content": "MGET item:1 item:2 item:3"
+        },
+        {
+            "id": "1760074022724",
+            "type": "redis",
+            "content": "GETRANGE item:1 0 0\r\nSETRANGE item:3 0 ghj "
+        },
+        {
+            "id": "1760074046611",
+            "type": "redis",
+            "content": "MGET item:3 item:2 item:1"
+        },
+        {
+            "id": "1760074153469",
+            "type": "redis",
+            "content": "SET age 20\r\n\r\nINCR age "
+        },
+        {
+            "id": "1760074186349",
+            "type": "redis",
+            "content": "DECR age"
+        },
+        {
+            "id": "1760074208428",
+            "type": "redis",
+            "content": "INCRBY age 10"
+        },
+        {
+            "id": "1760074227589",
+            "type": "redis",
+            "content": "DECRBY age 9 "
+        },
+        {
+            "id": "1760074296208",
+            "type": "redis",
+            "content": "INCRBYFLOAT age -8.9"
+        }
+    ],
+    "id": "5b63bf2db1dd6c6e"
+}
