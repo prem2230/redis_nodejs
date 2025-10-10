@@ -38,6 +38,8 @@
 //DECRBY age 3                       // Decrement the integer value of a key by the given amount
 //INCRBYFLOAT age 2.5                 // Increment the float value of a key by the given amount
 //INCRBYFLOAT age -1.5                // Decrement the float value of a key by the given amount
+//STRLEN color                       // Get the length of the value of a key
+//APPEND color "ish"                 // Append a value to a key
 
 // 3. REDIS DATA TYPES
 // - Strings: Simple key-value pairs
@@ -66,13 +68,23 @@
         SISMEMBER myset "val" - Check membership
         SCARD myset           - Get set size
         */
-// - Hashes: Key-value pairs within a key
+// - Hashes: Key-value pairs within a key - nested key-value pairs
         /*
-        HSET user:1 name "John" age 30
-        HGET user:1 name
+        HSET user:1 name "John" age 30  - Set fields
+        HGET user:1 name      - Get field value
         HGETALL user:1        - Get all fields
         HDEL user:1 age       - Delete field
         HEXISTS user:1 name   - Check field exists
+        DEL user:1            - Delete entire hash
+        HDEL user:1 name age - Delete multiple fields
+        HINCRBY user:1 age 1  - Increment field value
+        HINCRBYFLOAT user:1 score 1.5 - Increment float field value
+        HINCRBY user:1 visits -1 - Decrement field value
+        HINCRBYFLOAT user:1 rating -0.5 - Decrement float field value
+        HSTRLEN user:1 name - Get length of field value
+        HKEYS user:1 - Get all field names
+        HVALS user:1 - Get all field values
+        HLEN user:1 - Get number of fields
         */
 // - Sorted Sets: Sets with a score for ordering
         /*
