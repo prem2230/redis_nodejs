@@ -51,6 +51,7 @@
         APPEND key value      - Append to string
         STRLEN key            - Get string length
         */
+
 // - Lists: Ordered collections of strings
         /*
         LPUSH mylist "item1"  - Add to left
@@ -60,6 +61,7 @@
         LRANGE mylist 0 -1    - Get all items
         LLEN mylist           - Get list length
         */
+
 // - Sets: Unordered collections of unique strings
         /*
         SADD myset "value1"   - Add to set
@@ -68,6 +70,7 @@
         SISMEMBER myset "val" - Check membership
         SCARD myset           - Get set size
         */
+
 // - Hashes: Key-value pairs within a key - nested key-value pairs
         /*
         HSET user:1 name "John" age 30  - Set fields
@@ -86,6 +89,7 @@
         HVALS user:1 - Get all field values
         HLEN user:1 - Get number of fields
         */
+
 // - Sorted Sets: Sets with a score for ordering
         /*
         ZADD leaderboard 100 "player1"
@@ -109,3 +113,31 @@
 // - TTL key: Get the time to live of a key
 // - INCR key: Increment the integer value of a key
 // - DECR key: Decrement the integer value of a key
+
+//5.REASON TO STORE AS HASH 
+// - The record has many attributes or fields
+// - A collection of these records have to be sorted many different ways
+// - Often need to access a single record at a time
+
+//6.DONT USE HASH WHEN
+// - The record is only for counting or enforcing uniqueness
+// - Record stores only one or two attributes
+// - Used only for creating relations between different records
+// - The record is only used for time series data
+
+//7. SERIALIZATION and DESERIALIZATION
+// serialize() - Convert data structure to string for storage
+//             - Gets an object ready to go INTO redis as a hash
+//             - Removes ID
+//             - Turns dates into a queryable format
+// deserialize() - Convert string back to original data structure
+//               - Formats data coming OUT of redis
+//               - Adds ID back in
+//               - Parse string numbers into plain numbers
+//Date time formats - Unix Time Seconds (1672531199) or Unix Time Milliseconds (1672531199000)
+
+//7. PIPELINES
+// - Group multiple commands into a single request
+// - Reduces network round-trips
+// - Improves performance for bulk operations
+// - Example: Using pipelines to set multiple keys at once
