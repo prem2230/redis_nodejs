@@ -1,0 +1,83 @@
+{
+    "name": "Sets",
+    "fileName": "My Noxious Woman Notebook.json",
+    "createdAt": "2025-10-13T08:21:24.115Z",
+    "cells": [
+        {
+            "id": "bda79679f3b7d397",
+            "type": "markdown",
+            "content": "**Notes**\n\n* Add some notes here\n* Use markdown"
+        },
+        {
+            "id": "675edab00e234357",
+            "type": "redis",
+            "content": "SADD numbers 1000"
+        },
+        {
+            "id": "1760349235881",
+            "type": "redis",
+            "content": "SMEMBERS numbers "
+        },
+        {
+            "id": "1760349315353",
+            "type": "redis",
+            "content": "SADD colors:1 red blue orange\r\nSADD colors:2 blue green purple\r\nSADD colors:3 blue red purple"
+        },
+        {
+            "id": "1760349416089",
+            "type": "redis",
+            "content": "SUNION colors:1 colors:2 colors:3"
+        },
+        {
+            "id": "1760349507001",
+            "type": "redis",
+            "content": "SINTER colors:2 colors:3"
+        },
+        {
+            "id": "1760349550980",
+            "type": "redis",
+            "content": "SDIFF colors:1 colors:2 "
+        },
+        {
+            "id": "1760350114354",
+            "type": "redis",
+            "content": "SUNIONSTORE colors:results colors:1 colors:2 colors:3 "
+        },
+        {
+            "id": "1760350163380",
+            "type": "redis",
+            "content": "SINTERSTORE colors:results1 colors:1 colors:2 colors:3"
+        },
+        {
+            "id": "1760350208811",
+            "type": "redis",
+            "content": "SDIFFSTORE colors:results2 colors:1 colors:2 colors:3"
+        },
+        {
+            "id": "1760350344217",
+            "type": "redis",
+            "content": "SISMEMBER colors:1 purple"
+        },
+        {
+            "id": "1760350394628",
+            "type": "redis",
+            "content": "SMISMEMBER colors:1 red purple blue"
+        },
+        {
+            "id": "1760350429309",
+            "type": "redis",
+            "content": "SCARD colors:results"
+        },
+        {
+            "id": "1760350511433",
+            "type": "redis",
+            "content": "SREM colors:results2 orange"
+        },
+        {
+            "id": "1760350599977",
+            "type": "redis",
+            "content": "SSCAN colors:results 3 COUNT 1"
+        }
+    ],
+    "id": "9ad1667f96cb81a2"
+}

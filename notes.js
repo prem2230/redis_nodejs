@@ -64,11 +64,19 @@
 
 // - Sets: Unordered collections of unique strings
         /*
-        SADD myset "value1"   - Add to set
-        SREM myset "value1"   - Remove from set
+        SADD myset "value1"   - Add to set only if not exists
         SMEMBERS myset        - Get all members
-        SISMEMBER myset "val" - Check membership
-        SCARD myset           - Get set size
+        SUNION set1 set2   - Union of sets give all unique members
+        SINTER set1 set2   - Intersection of sets give common members
+        SDIFF set1 set2    - Difference of sets give members in set1 not in set2
+        SUNIONSTORE dest set1 set2 - Store union in new set
+        SINTERSTORE dest set1 set2 - Store intersection in new set
+        SDIFFSTORE dest set1 set2  - Store difference in new set
+        SISMEMBER myset "val" - Check membership (1 if exists, 0 if not)
+        SMISMEMBER myset "val1" "val2" - Check multiple memberships (1 if exists, 0 if not) gives array of results
+        SCARD myset           - Get set size (number of members)
+        SREM myset "value1"   - Remove from set if exists
+        SSCAN myset 0 MATCH pattern COUNT 10 - Iterate over set members with pattern matching and count limit
         */
 
 // - Hashes: Key-value pairs within a key - nested key-value pairs
@@ -90,12 +98,25 @@
         HLEN user:1 - Get number of fields
         */
 
-// - Sorted Sets: Sets with a score for ordering
+// - Sorted Sets: Sets with a score for ordering - a key that points to a data structure that holds unique values ordered by a score
         /*
-        ZADD leaderboard 100 "player1"
-        ZRANGE leaderboard 0 -1 WITHSCORES
-        ZRANK leaderboard "player1"
-        ZREM leaderboard "player1"
+        ZADD leaderboard 100 "player1" - Add with score (only if not exists)
+        ZADD leaderboard 150 "player2" - Add with score (only if not exists)
+        ZSCORE leaderboard "player1" - Get score of member
+        ZREM leaderboard "player1" - Remove member
+        ZCARD leaderboard - Get number of members
+        ZCOUNT leaderboard 100 200 - Count members with scores between min and max (0 
+        (50 means not including the number
+        ZCOUNT leaderboard -inf +inf) - Count all members ex- 15 +inf means all the way to positive infinity
+        ZPOPMAX leaderboard - Remove and return member with highest score
+        ZPOPMIN leaderboard - Remove and return member with lowest score
+        ZINCRBY leaderboard 10 "player2" - Increment score of member
+        ZINCRBY leaderboard -5 "player2" - Decrement score of member
+        ZRANGE leaderboard 1 2 - Get all members by index range in ascending order
+        ZRANGE leaderboard 0 -1 WITHSCORES - Get all members with scores in ascending order
+        ZRANGE leaderboard 0 -1 BYSCORE WITHSCORES - Get all members with scores in ascending order by score
+        ZRANGE leaderboard 0 2 REV WITHSCORES - Get top N members with scores in descending order
+        ZRANGE leaderboard 0 -1 BYSCORE LIMIT 0 10 - Get members with scores in ascending order by score with limit
         */
 // - Bitmaps: Efficient storage of bits
 // - HyperLogLogs: Probabilistic data structure for counting unique items
@@ -141,3 +162,5 @@
 // - Reduces network round-trips
 // - Improves performance for bulk operations
 // - Example: Using pipelines to set multiple keys at once
+
+//
