@@ -52,14 +52,30 @@
         STRLEN key            - Get string length
         */
 
-// - Lists: Ordered collections of strings
+// - Lists: Ordered collections of strings, not an array but a linked list, implemented as a doubly linked list, useful for time series data, queues, stacks
         /*
-        LPUSH mylist "item1"  - Add to left
+        LPUSH mylist "item1"  - Add to left 
         RPUSH mylist "item2"  - Add to right
+        LLEN mylist           - Get list length
+        LINDEX mylist 0        - Get item at index
+        LINDEX mylist -1      - Get last item
+        LRANGE temps 0 3    - Get items in range
+        LRANGE temps 1 232323232 - Get all items from index 1 to end
+        LRANGE temps 0 -1  - Get all items
+        LRANGE temps 0 -2 - Get all items except last
+        LPOS temps "value" - Get index of item
+        LPOS temps 25 RANK 2 - Get index of 2nd occurrence of item
+        LPOS temps 25 COUNT 2 - Get index of item with count limit returns array of indexes
+        LPOS temps 25 MAXLEN 10 - Get index of item with max length to scan
         LPOP mylist           - Remove from left
         RPOP mylist           - Remove from right
-        LRANGE mylist 0 -1    - Get all items
-        LLEN mylist           - Get list length
+        LSET mylist 0 "newitem" - Set item at index
+        LTRIM mylist 0 2     - Trim list to specified range
+        LINSERT mylist BEFORE "item2" "item1.5" - Insert before pivot
+        LINSERT mylist AFTER "item2" "item2.5"  - Insert after pivot
+        LREM mylist 0 "item" - Remove all occurrences of item
+        LREM mylist 2 "item" - Remove first 2 occurrences of item
+        LREM mylist -2 "item" - Remove last 2 occurrences of item
         */
 
 // - Sets: Unordered collections of unique strings
