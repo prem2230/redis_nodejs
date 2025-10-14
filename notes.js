@@ -163,4 +163,24 @@
 // - Improves performance for bulk operations
 // - Example: Using pipelines to set multiple keys at once
 
-//
+//8.SORT COMMAND
+// - SORT command operates on lists, sets, and sorted sets
+// - SORT can be operates on members in sorted sets not scores
+// - SORT books:likes ALPHA - Sorts members of the set "books:likes" alphabetically
+// - SORT books:likes LIMIT 1 2 ALPHA - Sorts members of the set "books:likes" alphabetically and returns 2 members starting from index 1
+// - SORT books:likes BY books:*->title ALPHA - Sorts members of the set "books:likes" based on the "title" field in the hash "books:<member>"
+// - SORT books:likes BY books:*->year - Sorts members of the set "books:likes" based on the "year" field in the hash "books:<member>"
+// - SORT books:likes BY books:*->year GET books:*->title - Sorts members of the set "books:likes" based on the "year" field in the hash "books:<member>" and returns the "title" field
+// - SORT books:likes BY books:*->year GET books:*->title GET books:*->year - Sorts members of the set "books:likes" based on the "year" field in the hash "books:<member>" and returns both the "title" and "year" fields
+// - SORT books:likes BY books:*->year GET # GET books:*->title GET books:*->year - Sorts members of the set "books:likes" based on the "year" field in the hash "books:<member>" and returns the member, "title", and "year" fields
+// - SORT books:likes BY nosort GET # GET books:*->title GET books:*->year - Sorts members of the set "books:likes" without sorting and returns the member, "title", and "year" fields. nosort is not presumably a real word but it is a keyword in redis sort command
+// - SORT books:likes BY nosort DESC GET # GET books:*->title GET books:*->year - Sorts members of the set "books:likes" without sorting in descending order and returns the member, "title", and "year" fields
+// - SORT books:likes BY nosort ASC GET # GET books:*->title GET books:*->year - Sorts members of the set "books:likes" without sorting in ascending order and returns the member, "title", and "year" fields
+
+//9. HYPERLOGLOG
+// - Probabilistic data structure for counting unique items
+// - Uses fixed amount of memory (12kB) regardless of number of items
+// - will not store the actual items, just an approximation of the count
+// - Commands:
+// - PFADD key item [item ...]: Add items to the HyperLogLog
+// - PFCOUNT key [key ...]: Get the approximate count of unique items
