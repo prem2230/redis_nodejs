@@ -200,3 +200,98 @@
 // - Commands:
 // - PFADD key item [item ...]: Add items to the HyperLogLog
 // - PFCOUNT key [key ...]: Get the approximate count of unique items
+
+//10. ATOMIC OPERATIONS
+// - Redis operations are atomic, meaning they are executed as a single, indivisible operation 
+// - This ensures data consistency even in concurrent environments
+// - Example: INCR command to safely increment a counter, HINCBY to increment a field in a hash, HSETNX to set a field only if it does not exist
+
+//11. TRANSACTIONS
+// - Group multiple commands into a single transaction using MULTI and EXEC
+// - Ensures all commands are executed atomically
+// - Example: Using transactions to transfer funds between accounts
+// - Commands:
+// - MULTI: Start a transaction
+// - EXEC: Execute all commands in the transaction
+// - DISCARD: Discard all commands in the transaction
+// - WATCH key [key ...]: Watch keys for changes before executing a transaction
+// - UNWATCH: Unwatch all keys
+
+//12. LUA SCRIPTING
+// - Access sorted sets, lists, hashes, and other data structures
+// - LUA scripts written in Lua programming language
+// - Write custom scripts in Lua to execute complex operations atomically
+// - Scripts are stored and executed on the Redis server
+// BASIC SNIPPETS OF LUA SCRIPTS
+/*       print("Hello, World!")
+        print('Hello world')
+        print(123)
+
+        local sum = 1+1
+        print(sum)
+
+        if sum > 0 then
+        print('sum is greater than 0')
+        end
+
+        if sum~=0 then
+        print('sum is not equal to 0')
+        end
+
+        if sum==0 then
+        print('sum is equal to 0')
+        end
+
+        if 0 and '' then 
+        print('0 is truthy')
+        end
+
+        if false or not true then 
+
+        end
+
+        if nil then 
+        print('wont run')
+        end
+
+        local colors = {'red', 'green', 'blue'}
+        print(colors[1])
+
+        print(#colors)
+
+        table.insert(colors, 'orange')
+        print(colors[4])
+
+        for i, v in ipairs(colors) do 
+        print(i, v)
+        end
+
+        for i=5, 10 do
+        print(i)
+        end
+
+        local user = {id = 'a1', name = 'samanatha'}
+
+        print(user['id'])
+
+        for k, v in pairs(user) do
+        print(k,v)
+        end
+*/
+// - Commands:
+// - SCRIPT LOAD 'return 1+1' - Load a script into the script cache and return its SHA1 hash
+// - EVALSHA sha numkeys - Execute a cached script by its SHA1 hash
+// - SCRIPT LOAD 'return 1 + tonumber(ARGV[1])' - Load a script that takes an argument and returns the sum of 1 and the argument
+// - EVALSHA sha 0 5 - Execute the cached script with the argument 5, returns 6
+// - SCRIPT LOAD 'return redis.call("GET", KEYS[1])' - Load a script that gets the value of a key
+// - EVALSHA sha 1 mykey - Execute the cached script with the key "mykey", returns the value of "mykey"
+// When to use scripts -
+// - Limiting the amount of data exchanged between server + redis
+// - Solving some concurrency issues
+// - Minimizing the number of round trips between server + redis
+//Adding a script with Node - Redis
+// - Name of the function like js
+// - The script itself
+// - # of keys that will be provided (for the EVALSHA command)
+// - Instruction on how to pass the arguments to the script (KEYS + ARGV)
+// - Instruction on how to parse the response from the script
