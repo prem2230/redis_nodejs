@@ -295,3 +295,38 @@
 // - # of keys that will be provided (for the EVALSHA command)
 // - Instruction on how to pass the arguments to the script (KEYS + ARGV)
 // - Instruction on how to parse the response from the script
+
+//13. REDLOCK
+// - Distributed locking algorithm for Redis
+// - Ensures mutual exclusion across multiple Redis instances
+// - Prevents race conditions in distributed systems
+// - Created by Redis author Salvatore Sanfilippo
+// WHY REDLOCK?
+// - Single Redis instance: Single point of failure
+// - Master-slave setup: Race conditions during failover
+// - Redlock: Uses multiple independent Redis masters
+// - Requires majority of instances to acquire lock
+// ALGORITHM STEPS:
+// 1. Get current time in milliseconds
+// 2. Try to acquire lock on all N instances sequentially
+// 3. Use same key name and random value on all instances
+// 4. Set timeout smaller than lock auto-release time
+// 5. Consider lock acquired if got it from majority (N/2+1)
+// 6. Lock validity time = initial TTL - elapsed time - clock drift
+// 7. If lock not acquired, unlock all instances
+// REDLOCK BEST PRACTICES
+// 1. Use odd number of Redis instances (3, 5, 7)
+// 2. Set appropriate TTL (longer than expected operation time)
+// 3. Handle lock expiration gracefully
+// 4. Use unique values for each lock attempt
+// 5. Always release locks in finally blocks
+// 6. Monitor lock acquisition success rates
+// 7. Consider network partitions and clock skew
+// 8. Use separate Redis instances, not master-slave
+// REDLOCK LIMITATIONS
+// 1. Assumes bounded clock drift
+// 2. Network partitions can cause issues
+// 3. Not suitable for very short-lived locks
+// 4. Requires majority of instances to be available
+// 5. Clock synchronization is important
+// 6. More complex than single-instance locking
