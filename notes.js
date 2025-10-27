@@ -466,3 +466,43 @@
 // Example - 
 // FT.PROFILE idx:items 'chair' - Profiles the search query 'chair' against the 'idx:items' index, providing detailed execution metrics to help identify performance bottlenecks and optimize the query for better efficiency. 
 
+//23. Streams
+// - Kind of like a cross between a list and a sorted set
+// - Used for communication between different servers
+// - Most useful with 'consumer groups'
+// - Tons and Tons of tiny details
+// XADD fruits * name apple color red - Add an entry to the "fruits" stream with fields "name" and "color"
+// XREAD STREAMS fruits 0-0 - Read entries from the "fruits" stream starting from the beginning
+// XREAD STREAMS fruits 1761579105753-0 - Read entries from the "fruits" stream starting from a specific ID timestamp after time 1761579105753-0
+// XREAD COUNT 1 STREAMS fruits 0-0 - Read a maximum of 1 entry from the "fruits" stream starting from the beginning
+// XREAD BLOCK 3000 STREAMS fruits 0-0 - Block for up to 3000 milliseconds waiting for new entries in the "fruits" stream starting from the beginning
+// XREAD BLOCK 3000 STREAMS fruits 1761579265392-0 - Block for up to 3000 milliseconds waiting for new entries in the "fruits" stream starting from a specific ID timestamp after time 1761579265392-0
+// XREAD COUNT 5 BLOCK 3000 STREAMS fruits 1761579265392-0 - Read a maximum of 5 entries from the "fruits" stream starting from a specific ID timestamp after time 1761579265392-0, blocking for up to 3000 milliseconds if no entries are available
+// XREAD BLOCK 3000 STREAMS fruits $ - Block for up to 3000 milliseconds waiting for new entries in the "fruits" stream starting from the latest entry ($)
+// XRANGE fruits 1761580069021-0 1761580069022-0 - Read entries from the "fruits" stream within the specified ID range
+// XRANGE fruits (1761580069021-0 1761580069022-0 - Read entries from the "fruits" stream within the specified ID range, excluding the start ID
+// XRANGE fruits 1761580069021-0 (1761580069022-0 - Read entries from the "fruits" stream within the specified ID range, excluding the end ID
+// XRANGE fruits 176158006-0 + - Read entries from the "fruits" stream starting from a specific ID timestamp after time 176158006-0 to the end
+// XRANGE fruits - (1761580069021-0 - Read entries from the "fruits" stream from the beginning up to a specific ID timestamp before time 1761580069021-0  
+// Difference between XREAD and XRANGE
+// - XREAD is used to read new entries from a stream, often in a blocking manner, while XRANGE is used to read a specific range of entries from a stream based on their IDs.
+// - XREAD is typically used for real-time processing of stream data, whereas XRANGE is used for querying historical data within a stream.
+// Issues in streams all workers aka consumers get same data and process it multiple times
+// Another issue is if a worker goes down the data it was supposed to process is lost
+
+//24. Consumer Groups
+// - Allow multiple consumers to share the workload of processing messages from a stream
+// - Each message is delivered to only one consumer in the group
+// - Consumers can acknowledge messages they have processed
+// - Each consumer has unique consumer name within the group
+// - Stream log keeps track of which messages have been delivered to which consumers
+// - keep track of last delivered ID for each consumer
+// XGROUP CREATE fruits1 fruits1-group $ MKSTREAM - Create a consumer group named "fruits1-group" for the "fruits1" stream, starting from the latest entry ($), and create the stream if it does not exist (MKSTREAM)
+// XGROUP CREATECONSUMER fruits1 fruits1-group worker-1 - Create a consumer named "worker-1" in the "fruits1-group" consumer group for the "fruits1" stream
+// XINFO GROUPS fruits1  - Get information about all consumer groups for the "fruits1" stream
+// XINFO CONSUMERS fruits1 fruits1-group - Get information about all consumers in the "fruits1-group" consumer group for the "fruits1" stream
+// XADD fruits1 10-0 name banana color yellow - Add an entry to the "fruits1" stream with fields "name" and "color", redis will auto generate the ID if not provided
+// XREADGROUP GROUP fruits1-group worker-1 COUNT 1 STREAMS fruits1 > - Read new entries from the "fruits1" stream for the "fruits1-group" consumer group and "worker-1" consumer, returning a maximum of 1 entry
+// XREADGROUP GROUP fruits1-group worker-2 COUNT 1 STREAMS fruits1 > - Read new entries from the "fruits1" stream for the "fruits1-group" consumer group and "worker-2" consumer, returning a maximum of 1 entry the last deliverd is tracked so worker-2 will get the next entry
+// XACK fruits1 fruits1-group 10-0 - Acknowledge that the entry with ID "10-0" in the "fruits1" stream has been processed by the "fruits1-group" consumer group
+// XAUTOCLAIM fruits1 fruits1-group worker-1 60000 0-0 COUNT 10 - Automatically claim entries in the "fruits1" stream that have been pending for more than 60000 milliseconds (60 seconds) for the "fruits1-group" consumer group and "worker-1" consumer, starting from ID "0-0", returning a maximum of 10 entries
