@@ -330,3 +330,139 @@
 // 4. Requires majority of instances to be available
 // 5. Clock synchronization is important
 // 6. More complex than single-instance locking
+
+//14. Redis Modules
+// - Additional data structures
+// - Popular modules are RedisJSON and RediSearch 
+// - RedisJSON - Store and manipulate JSON very easily inside of Redis
+// - RediSearch - True text search and true querying and filtering of different keys
+
+//15. Redis Stack
+// - RediSearch
+// - RedisJSON
+// - RedisGraph
+// - RedisTimeSeries
+// - RedisBloom
+
+//16. RediSearch 
+// FT.CREATE idx:cars ON HASH PREFIX 1 cars# SCHEMA name TEXT year NUMERIC color TAG
+// - Creates a search index named "idx:cars"
+// - ON HASH: Index will work on hash data structures
+// - PREFIX 1 cars#: Index hashes with keys starting with "cars#" (1 means one prefix)
+// - SCHEMA: Defines the fields to index
+//   - name TEXT: "name" field as full-text searchable
+//   - year NUMERIC: "year" field as numeric for range queries
+//   - color TAG: "color" field as exact-match tag
+// FT.SEARCH idx:cars '@name:(fast car)'
+// - Searches the "idx:cars" index
+// - @name: Search in the "name" field
+// - (fast car): Text search for "fast" OR "car" in name field
+// - Returns all cars with "fast" or "car" in their name
+// FT.SEARCH idx:cars '@color:{red}'
+// - Searches the "idx:cars" index  
+// - @color: Search in the "color" field
+// - {red}: Exact tag match for "red"
+// - Returns all cars where color is exactly "red"
+// FT.SEARCH idx:cars '@year:[1950 1960]'
+// - Searches the "idx:cars" index
+// - @year: Search in the "year" field
+// - [1950 1960]: Numeric range from 1950 to 1960 (inclusive)
+// - Returns all cars manufactured between 1950 and 1960
+//FT.SEARCH idx:cars '@year:[1955 1980] @color:{blue}' - multiple fields search 
+
+
+//17.           QUERYING                         VS                               SEARCHING
+//  Gives you exact result you ask for                       Gives results that best answer your question
+//  Example -                                                Example - 
+//  Get all cars made in 1955 with a color of red            Get all cars with a name like 'car that goes fast'
+//  Get all cars made before 1960 with a name of             Get all cars related to '90 blue fast'
+//  'fast car'
+//  Get all cars with a color of blue                        Get all cars related to 'gast var'
+
+//18. Index Types
+// - NUMERIC - contains number
+// - GEO - geographic coordinate
+// - VECTOR - similarity queries
+// - TAG - used for exact string lookups
+// - TEXT - supports fuzzy search, typos, etc
+// Querying - Use Tag
+// - ID reference to another record
+// - Color of a product
+// - Country that a product is made in
+// Searching - Use Text
+// - Product names
+// - Product descriptions
+// - Review of a product
+
+//19. Numeric queries 
+// @year:[1950 1980] - between 1950 and 1980 inclusive
+// @year:[(1955 (1980] - between 1955 and 1980, exclusive (1956 - 1979)
+// @year:[-inf 1955] - equal to or greater than 1955
+// -@year:[1955 1980] - not including 1955 - 1908
+
+//20. Tag Queries
+// @color{blue} - equal to blue
+// -@color{blue} - not equal to blue
+// @color{red | blue} - or
+// @color{light\blue} - escapes spaces with \
+// Stop words -  a,    is,    the,   an,   and,  are, as,  at,   be,   but,  by,   for, if,   in,    into,  it,   no,   not, of,  on,   or,   such, that, their, then, there, these, they, this, to,  was, will, with
+// These words will not go for search.
+
+//21. Text Queries
+// Stemming - searching for run will also return results for running, ran, runs
+// FT.SEARCH idx:books 'run' - returns all books with run, running, ran, runs
+// FT.SEARCH idx:books '@name:(fast car)' - search for fast and car
+// FT.SEARCH idx:books '@name:(fast | car)' - search for fast or car
+// FT.SEARCH idx:books '-@name:(fast)' - search for not fast
+// FT.SEARCH idx:books '@name:(fast -car)' - search for fast but not car
+// FT.SEARCH idx:cars '@name:(%far)' - % for fuzzy search, returns results like car, bar, far, tar
+// FT.SEARCH idx:cars '@name:(%%daar%%)' - %% for two character mismatch result can be car, dar, bar, far, taar, daar
+// FT.SEARCH idx:cars '@name:(fa*)' - * for prefix search, returns results like fast, fancy, far, family
+
+//22. Creating Indexes
+// client.ft.create(
+//         itemsIndexKey(),
+//         {
+//             name: {
+//                 type: SchemaFieldTypes.TEXT
+//             },
+//             description: {
+//                 type: SchemaFieldTypes.TEXT
+//             }
+//         },
+//         {
+//             ON: 'HASH',
+//             PREFIX: itemsKey('')
+//         }
+//     ); - Create an index for items with name and description as text fields, SchemaFieldTypes imported from node-redis, options - ON: 'HASH' to index hashes, PREFIX: itemsKey('') to index keys with the specified prefix
+// FT._LIST - List all indexes
+// ATF Algorithm - Adaptive Term Frequency 
+// - Improves search relevance by considering term frequency
+// - Adjusts scoring based on how often terms appear in documents
+// - Helps surface more relevant results in search queries
+// - Particularly useful for large datasets with varying term distributions
+// Example - 
+// FT.SEARCH idx:articles 'redis' WITHSCORES - Searches for articles containing 'redis' and returns results with relevance scores based on ATF algorithm 
+// weight - Boost importance of certain fields during search
+// Example - 
+// client.ft.create(
+//         itemsIndexKey(),
+//         {
+//             name: {          
+//                 type: SchemaFieldTypes.TEXT, 
+//                 weight: 5.0      // Boost name field importance
+//             },                                                                                              // Higher weight means more importance
+//             description: {   
+//                 type: SchemaFieldTypes.TEXT,
+//                 weight: 1.0      // Default weight for description field     
+//             }                                                                                               
+//         },
+// FT.EXPLAINCLI idx:items 'chair' - Explain how the search query 'chair' is processed against the 'idx:items' index, providing insights into term matching and scoring, chair, chairs, armchair, rocking chair, chairing, chaired
+// FT.EXPLAINCLI idx:items 'chair -desk' - Explain how the search query 'chair -desk' is processed against the 'idx:items' index, showing how 'desk' is excluded from results while 'chair' is matched, chair, chairs, armchair, rocking chair, chairing, chaired
+// FT.EXPLAINCLI idx:items '(@name:(chair)) | (@description:(chair))' - Explain how the search query '(@name:(chair)) | (@description:(chair))' is processed against the 'idx:items' index, detailing how matches are found in both the 'name' and 'description' fields for the term 'chair', chair, chairs, armchair, rocking chair, chairing, chaired.
+// Profiling Searches
+// - Use FT.PROFILE to analyze search query performance
+// - Identify bottlenecks and optimize queries
+// Example - 
+// FT.PROFILE idx:items 'chair' - Profiles the search query 'chair' against the 'idx:items' index, providing detailed execution metrics to help identify performance bottlenecks and optimize the query for better efficiency. 
+
